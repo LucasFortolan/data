@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 # Função para leitura do bando de dados
 df = pd.read_csv(
-    "C:\\Users\\lucas\\OneDrive\\Documentos\\LoanDatasetLoansDatasest.csv")
+    "LoanDatasetLoansDatasest.csv")
 print("Head do dataframe:")
 print(df[['customer_age', 'customer_income']].rename(
     columns={'customer_age': 'Idade', 'customer_income': 'Salario Anual'}).head())
