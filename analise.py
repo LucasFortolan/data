@@ -78,8 +78,8 @@ print("Y^= {:.3f}x + {:.3f}".format(a_coeff[0], l_coeff))
 # Plotar a reta com os coeficientes
 plt.scatter(x, y, color='blue')
 plt.plot(x, yRegressao, color='red')
-plt.title('Regressão Linear: Idades x Renda Anual')
-plt.xlabel('Idades')
+plt.title('Regressão Linear: Idade x Renda Anual')
+plt.xlabel('Idade')
 plt.ylabel('Renda Anual')
 plt.show()
 
