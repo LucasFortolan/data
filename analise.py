@@ -81,7 +81,7 @@ plt.plot(x, yRegressao, color='red')
 plt.title('Regressão Linear: Idades x Renda Anual')
 plt.xlabel('Idades')
 plt.ylabel('Renda Anual')
-# plt.show()
+plt.show()
 
 # Erro -> Erro Absoluto Médio (MAE)
 MAE = ((abs(y - yRegressao)).sum()) / n
