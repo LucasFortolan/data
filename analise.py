@@ -14,50 +14,48 @@ from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
 # Função para leitura do bando de dados
-df = pd.read_csv(
-    "LoanDatasetLoansDatasest.csv")
+df = pd.read_csv("LoanDatasetLoansDatasest.csv")
+
 print("Head do dataframe:")
 print(df[['customer_age', 'customer_income']].rename(
-    columns={'customer_age': 'Idade', 'customer_income': 'Salario Anual'}).head())
+    columns={'customer_age': 'Idade', 'customer_income': 'Salario Anual'}).head(3))
 
 # Tratamento de Colunas, transformando em tipo int ou float
 # Pois esta entendendo como string e ao fazer .sum(), concatenou
 df['customer_age'] = df['customer_age'].astype(int)
 # Além disso, esta com virgula na casa de milhar, coloquei tipo float, devido à capacidade de dado
-df['customer_income'] = df['customer_income'].str.replace(
-    ',', '').astype(float)
-df['employment_duration'] = df['employment_duration']
-df['loan_amnt'] = df['loan_amnt'].str.replace(
-    '£', '')
-df['loan_amnt'] = df['loan_amnt'].str.replace(
-    ',', '').astype(float)
-df['term_years'] = df['term_years']
-df['cred_hist_length'] = df['cred_hist_length']
-print("\nTabela de Correlacao:")
+df['customer_income'] = df['customer_income'].str.replace(',', '').astype(float)
+
+df['loan_amnt'] = df['loan_amnt'].str.replace('£', '')
+df['loan_amnt'] = df['loan_amnt'].str.replace(',', '').astype(float)
+
+print("\nTabela de Correlação:")
 correlacao = df[['customer_age', 'employment_duration', 'customer_income',
                 'loan_amnt', 'term_years', 'cred_hist_length']].corr()
 print(correlacao)
 
+# Exibir a correlação específica entre customer_income e customer_age
+correlacao_Idade_Salario = df['customer_age'].corr(df['customer_income'])
+print("\nCorrelação entre a Idade e Salario Atual (£): r = {:.3f}%".format(correlacao_Idade_Salario*100))
+
 # Prova Real para a Coluna Idade e Salario Anual irei Utilizar
-a = df[['customer_age', 'customer_income',
-        'employment_duration', 'loan_amnt', 'term_years']].corr()
+a = df[['customer_age', 'customer_income','employment_duration', 'loan_amnt', 'term_years']].corr()
 somaX = df['customer_age'].sum()
 somaY = df['customer_income'].sum()
 XX = (df['customer_age'] ** 2).sum()
 YY = (df['customer_income'] ** 2).sum()
 somaXY = (df['customer_age'] * df['customer_income']).sum()
-# Acessar o número de linhas do DataFrame
-n = df.shape[0]  # shape é corpo
+
+# Número de linhas do DataFrame
+n = len(df)
 
 # Calculo para a Correlação
-r = (n*somaXY - somaX*somaY) / \
-    (math.sqrt((n*XX - somaX*somaX) * (n*YY - somaY*somaY)))
+r = (n*somaXY - somaX*somaY) / (math.sqrt((n*XX - somaX*somaX) * (n*YY - somaY*somaY)))
 
-print(
-    "\nCorrelação entre Número de Idades e Salario Anual\nr = {:.3f}%".format(r*100))
+print("Correlação entre a Idade e Salario Anual (£): r = {:.3f}%".format(r*100))
 
 # Regressão Linear
-# Definindo os eixos
+    # Definindo os eixos
 x = df[['customer_age']]
 y = df['customer_income']
 
@@ -69,23 +67,27 @@ modelo.fit(x, y)
 a_coeff = modelo.coef_
 l_coeff = modelo.intercept_
 
-yRegressao = a_coeff * x + l_coeff
+#yRegressao = a_coeff * x + l_coeff
+# Previsões feitas pelo modelo
+yRegressao = modelo.predict(x)
 
-print("\nRegressão Linear")
-print("Coeficiente Angular: {:.3f} \nCoeficiente Linear {:.3f}".format(
-    a_coeff[0], l_coeff))
+# Erro -
+print("\nErros:")
+    # Erro Absoluto Médio (MAE): Calcula o erro absoluto entre os valores reais de renda (y) e os valores previstos (yRegressao).
+MAE = ((abs(y - yRegressao)).sum()) / n
+print("Erro Absoluto Médio: ", MAE)
+    # MSE: Calcula o erro quadrático entre os valores reais de renda e os previstos.
+MSE = ((abs(y - yRegressao)**2).sum()) / n
+print("Erro Quadratico Médio: ", MSE)
+
+print("\nRegressão Linear: ")
+print("Coeficiente Angular: {:.3f} \nCoeficiente Linear {:.3f}".format(a_coeff[0], l_coeff))
 print("Y^= {:.3f}x + {:.3f}".format(a_coeff[0], l_coeff))
+
 # Plotar a reta com os coeficientes
 plt.scatter(x, y, color='blue')
 plt.plot(x, yRegressao, color='red')
-plt.title('Regressão Linear: Idade x Renda Anual')
+plt.title('Regressão Linear: Idade x Renda Anual (£)')
 plt.xlabel('Idade')
-plt.ylabel('Renda Anual')
-plt.show()
-
-# Erro -> Erro Absoluto Médio (MAE)
-MAE = ((abs(y - yRegressao)).sum()) / n
-print("Erro Absoluto Médio: ", MAE)
-# MSE = ((abs(y - yRegressao):**2).sum()) / n
-# print("Erro Quadratico Médio: ", MSE)
-print("ok")
+plt.ylabel('Renda Anual (£)')
+plt.show() 
